@@ -9,7 +9,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from src.cleaning_engineering_functions import read_yaml
 
@@ -157,7 +156,7 @@ class Model:
             best_clf = clf.fit(X_train, y_train)
             print("best params:")
             print(clf.best_params_)
-            
+
             y_pred = best_clf.predict(X_test)
         else:
             self.logger.info("Grid CV skipped")
