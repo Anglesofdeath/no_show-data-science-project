@@ -6,10 +6,10 @@ Logistic:
   Solver: 'lbfgs' #found after running GridCV
 
 RandomForest:
-  Run: False
+  Run: True
   GridCV: False
   MaxDepth: 22 #found after running GridCV
 
 SVM:
-  Run: True
+  Run: False
   GridCV: False
