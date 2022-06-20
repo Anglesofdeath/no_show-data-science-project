@@ -19,7 +19,7 @@ def main():
     modeling = Model(clean_data)
     modeling.build_model_random_forest()
     modeling.build_model_logistic_regression()
-    modeling.build_model_SVM()
+    modeling.build_model_KNN()
 
 
 if __name__ == "__main__":

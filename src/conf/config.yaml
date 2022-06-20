@@ -10,6 +10,7 @@ RandomForest:
   GridCV: False
   MaxDepth: 22 #found after running GridCV
 
-SVM:
+KNN:
   Run: False
   GridCV: False
+  N_Neighbors: 6

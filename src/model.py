@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
 from src.cleaning_engineering_functions import read_yaml
 
 class Model:
@@ -117,12 +118,12 @@ class Model:
         self.logger.info(f"Accuracy score: {accuracy_score(y_test, y_pred)}")
         self.logger.info(f"f1 score: {f1_score(y_test, y_pred, average='macro')}")
 
-    def build_model_SVM(self):
+    def build_model_KNN(self):
         config_file = read_yaml("src/conf/config.yaml")
-        if config_file['SVM']['Run'] == False:
-            self.logger.info("SVM Skipped")
+        if config_file['KNN']['Run'] == False:
+            self.logger.info("KNN Skipped")
             return
-        self.logger.info("Running SVM")
+        self.logger.info("Running KNN")
         drop_columns_name = ["price", "no_show", "checkout_month", "booking_month", "checkout_day", "booking_id"]
         X = self.data.drop(drop_columns_name, axis = 1)
 
@@ -137,29 +138,32 @@ class Model:
         X_train, X_test, y_train, y_test = train_test_split(
             encoder_df, y, test_size=0.2, random_state=2
         )
-        if config_file['SVM']['GridCV'] == True:
+        if config_file['KNN']['GridCV'] == True:
             self.logger.info("Running Grid CV")
-            pipe = Pipeline([('classifier' , SVC())])
+            pipe = Pipeline([('classifier' , KNeighborsClassifier)])
 
 
             param_grid = [
-                {'classifier' : [SVC()],
-                'classifier__kernel': ['poly', 'sigmoid']}, # 'rbf' wasn't used because its too complicated and takes too long
+                {'classifier' : [KNeighborsClassifier()],
+                'classifier__n_neighbors': list(range(5, 8))},
             ]
 
             # Create grid search object
 
-            clf = GridSearchCV(pipe, param_grid = param_grid, cv = 2, verbose=True, n_jobs=-1)
+            clf = GridSearchCV(pipe, param_grid = param_grid, cv = 2, verbose=True, n_jobs=-1, scoring = 'accuracy')
 
             # Fit on data
 
             best_clf = clf.fit(X_train, y_train)
+            print("best params:")
+            print(clf.best_params_)
+            
             y_pred = best_clf.predict(X_test)
         else:
             self.logger.info("Grid CV skipped")
-            clf = SVC(random_state=42)
+            clf = KNeighborsClassifier(n_neighbors = config_file['KNN']['N_Neighbors'])
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
         
-        self.logger.info(f"Accuracy score: {accuracy_score(y_test, y_pred, average='macro')}")
+        self.logger.info(f"Accuracy score: {accuracy_score(y_test, y_pred)}")
         self.logger.info(f"f1 score: {f1_score(y_test, y_pred, average='macro')}")
