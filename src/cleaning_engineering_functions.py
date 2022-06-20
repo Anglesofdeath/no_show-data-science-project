@@ -1,4 +1,5 @@
 import numpy as np
+import yaml
 
 def fillRoomUsingPrice(room: str, branch: str, price: float):
     '''
@@ -60,3 +61,7 @@ def bookedMonthsBefore(booked_month: str, checkIn_month: str):
         return y - x
     else:
         return 12 -(x - y)
+
+def read_yaml(file_path):
+    with open(file_path, "r") as f:
+        return yaml.safe_load(f)

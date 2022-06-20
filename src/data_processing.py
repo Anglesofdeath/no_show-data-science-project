@@ -4,7 +4,7 @@ import sqlite3
 import urllib.request
 import pandas as pd
 import numpy as np
-import cleaning_engineering_functions as cef
+from . import cleaning_engineering_functions as cef
 
 class DataProcessing:
     def __init__(self) -> None:
@@ -30,26 +30,19 @@ class DataProcessing:
         self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
 
     def clean_data(self):
-
+        self.logger.info("Starting data cleaning and Feature Engineering")
         self.df.dropna(subset=['no_show'], inplace=True)
         self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
         self.logger.info("na row dropped")
         self.df['price'] = self.df.apply(lambda x: cef.convertCurrencyStringToInt64(x['price']), axis=1)
         self.logger.info("price converted")
-        self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
         self.df['room'] = self.df.apply(lambda x: cef.fillRoomUsingPrice(x['room'], x['branch'], x['price']), axis=1)
         self.logger.info("room na filled")
-        self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
         self.df['arrival_month'] = self.df['arrival_month'].apply(cef.stringConvert)
         self.logger.info("arrival_month formatted")
-        self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
         self.df['booked_months_before'] = self.df.apply(lambda x: cef.bookedMonthsBefore(x['booking_month'], x['arrival_month']), axis=1)
         self.logger.info("booked_months_before created")
-        self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
         self.df.reset_index()
         self.logger.info("index reset")
-        self.logger.info(f"Size of DataFrame: {self.df.shape[0]}")
-        self.logger.info(f"room: {self.df['room'].isna().sum()}")
-        self.logger.info(f"num_children: {self.df['num_children'].unique()}")
-        self.logger.info(f"num_children: {self.df['booked_months_before'].unique()}")
+        self.logger.info("Finished Data Cleaning and Feature Engineering")
         return self.df

@@ -1,2 +1,15 @@
-logistic_regression: 
-  
+Logistic:
+  Run: False
+  GridCV: False
+  Penalty: 'l2' #found after running GridCV
+  C: 0.75 #found after running GridCV
+  Solver: 'lbfgs' #found after running GridCV
+
+RandomForest:
+  Run: False
+  GridCV: False
+  MaxDepth: 22 #found after running GridCV
+
+SVM:
+  Run: True
+  GridCV: False
